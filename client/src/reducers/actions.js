@@ -1,0 +1,6 @@
+export const makeTurn = (payload) => ({type: 'makeTurn', payload})
+export const switchTurn = () => ({type: 'switchTurn'})
+export const checkWinner = () => ({type: 'checkWinner'})
+export const openModal = () => ({type: 'openModal'})
+export const setRoomName = (payload) => ({type: 'setRoomName', payload})
+export const setUserName = (payload) => ({type: 'setUserName', payload})

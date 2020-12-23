@@ -1,0 +1,25 @@
+.table-bordered {
+    width: 730px;
+    height: 730px;
+    table-layout: fixed;
+    border: 3px solid black;
+    margin: 90px auto;
+}
+.table-bordered .field-cell {
+    border: 3px solid black;
+    width: 100px;
+    height: 80px;
+    text-align: center;
+    font-size: 36px;
+    cursor: pointer;
+    vertical-align: middle !important;
+}
+.cross {
+    background-color: #66FF99;
+}
+.zero {
+    background-color: #FF3333;
+}
+.card-holder {
+    margin-top: 20px;
+}

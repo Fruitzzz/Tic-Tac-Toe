@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Card from 'react-bootstrap/cjs/Card'
 import Button from 'react-bootstrap/cjs/Button'
 import Navbar from 'react-bootstrap/cjs/Navbar'
@@ -6,11 +6,14 @@ import Form from 'react-bootstrap/cjs/Form'
 import FormControl from 'react-bootstrap/cjs/FormControl'
 import Modal from 'react-bootstrap/cjs/Modal'
 import InputGroup from 'react-bootstrap/cjs/InputGroup'
-import {bindActionCreators} from 'redux'
-import * as actions from '../reducers/actions'
-import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-const Hub = ({modalIsOpen, openModal, roomName, setRoomName, setUserName, userName}) => {
+const Hub = () => {
+    const [userName, setUserName] = useState('')
+    const [roomName, setRoomName] = useState('')
+    const [modal, setModalStatus] = useState(false)
+    const changeModal = () => {
+        setModalStatus(!modal)
+    }
     return (
         <div className="container justify-content-center text-center">
             <Navbar bg="dark" variant="dark">
@@ -19,7 +22,7 @@ const Hub = ({modalIsOpen, openModal, roomName, setRoomName, setUserName, userNa
                     <FormControl type="text" placeholder="Enter tags" className="mr-sm-2"/>
                     <button type="button" className="btn btn-dark">Search</button>
                 </Form>
-                <button type="button" className="btn btn-dark" onClick={openModal}>Create room</button>
+                <button type="button" className="btn btn-dark" onClick={changeModal}>Create room</button>
             </Navbar>
             <div className="card-holder">
                 <Card style={{width: '18rem'}}>
@@ -32,10 +35,10 @@ const Hub = ({modalIsOpen, openModal, roomName, setRoomName, setUserName, userNa
                     </Card.Body>
                 </Card>
             </div>
-            <Modal show={modalIsOpen} onHide={openModal}>
+            <Modal show={modal} onHide={changeModal}>
                 <Modal.Header>
                     <Modal.Title>Create room</Modal.Title>
-                    <button type="button" className="close" onClick={openModal}>
+                    <button type="button" className="close" onClick={changeModal}>
                         <span aria-hidden={true}>×</span>
                     </button>
                 </Modal.Header>
@@ -78,7 +81,7 @@ const Hub = ({modalIsOpen, openModal, roomName, setRoomName, setUserName, userNa
                     </InputGroup>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className="btn btn btn-dark" onClick={openModal}>
+                    <button className="btn btn btn-dark" onClick={changeModal}>
                         Close
                     </button>
                     <Link onClick={event => !roomName? event.preventDefault() : null} to={`/game?name=${userName}&room=${roomName}`}>
@@ -91,15 +94,4 @@ const Hub = ({modalIsOpen, openModal, roomName, setRoomName, setUserName, userNa
         </div>
     )
 }
-const mapStateToProps = (state) => {
-    return {
-        modalIsOpen: state.userReducer.modalIsOpen,
-        roomName: state.userReducer.roomName,
-        userName: state.userReducer.userName
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    const {openModal, setRoomName, setUserName} = bindActionCreators(actions, dispatch)
-    return {openModal, setRoomName, setUserName}
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Hub)
+export default (Hub)

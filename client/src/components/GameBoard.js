@@ -1,12 +1,9 @@
 import React, {useEffect} from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import * as actions from '../reducers/actions'
 import Table from 'react-bootstrap/cjs/Table'
 
 
-const GameBoard = ({field, makeTurn, checkWinner, winner, socket, setSymbol, canTurn, currentTurn, setField, setTurn}) => {
-    const sendField = () => {
+const GameBoard = ({field, turn, symbol, winner, updateField, updateTurn}) => {
+   /* const sendField = () => {
         socket.emit('sendField', {field})
     }
     useEffect(() => {
@@ -35,7 +32,7 @@ const GameBoard = ({field, makeTurn, checkWinner, winner, socket, setSymbol, can
                 setSymbol(turn)
             })
         }
-    }, [socket, setSymbol, currentTurn])
+    }, [socket, setSymbol, currentTurn])*/
     return (
             <Table className="table-bordered">
                 <tbody>
@@ -47,10 +44,10 @@ const GameBoard = ({field, makeTurn, checkWinner, winner, socket, setSymbol, can
                                     return <td
                                         className={field[row][col] === '✕' ? 'field-cell cross' : field[row][col] === 'O' ? 'field-cell zero' : 'field-cell'}
                                         key={col} onClick={() => {
-                                        if (!field[row][col] && !winner && canTurn) {
-                                            makeTurn({row, col})
-                                            checkWinner()
-                                            sendField()
+                                            console.log(turn, symbol)
+                                        if (!field[row][col] && !winner && turn === symbol) {
+                                            updateField({row, col})
+                                            updateTurn()
                                         }
                                     }}>{field[row][col]}</td>
                                 })}
@@ -62,17 +59,4 @@ const GameBoard = ({field, makeTurn, checkWinner, winner, socket, setSymbol, can
             </Table>
     )
 }
-const mapStateToProps = (state) => {
-    return {
-        field: state.boardReducer.field,
-        currentTurn: state.boardReducer.currentTurn,
-        winner: state.boardReducer.winner,
-        socket: state.userReducer.socket,
-        canTurn: state.boardReducer.canTurn
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    const {makeTurn, switchTurn, checkWinner, setSymbol, setField, setTurn} = bindActionCreators(actions, dispatch)
-    return {makeTurn, switchTurn, checkWinner, setSymbol, setField, setTurn}
-}
-export default connect(mapStateToProps, mapDispatchToProps)(GameBoard)
+export default (GameBoard)

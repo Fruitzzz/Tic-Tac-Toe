@@ -19,25 +19,21 @@ io.on('connect', (socket) => {
         const {error, user} = addUser({id: socket.id, name, room: roomName})
         if(user) {
             socket.join(user.room)
+            io.to(user.id).emit('start', {turn : user.turn, symbol: user.symbol})
         }
 
-        socket.on ('swapTurns', () => {
+        socket.on ('swapTurn', () => {
                 const user = getUser(socket.id)
                 users.forEach((item) => {
                     if (item.room === user.room) {
+                        item.turn === '✕'? item.turn = 'O': item.turn = '✕'
                         console.log(item)
-                        item.canTurn = !item.canTurn
                     }
                 })
-                io.to(user.id).emit('takeTurns', {canTurn: user.canTurn})
+                io.to(user.room).emit('takeTurn', {turn: user.turn})
         })
-
-        socket.on('requestStartProps', () => {
-                const user = getUser(socket.id)
-                io.to(user.id).emit('takeStartProps', {turn: user.turn})
-        })
-
-        socket.on('sendField', ({field}, callback) => {
+        socket.on('sendField', (field) => {
+            console.log(field)
             const user = getUser(socket.id)
             io.to(user.room).emit('takeField', field)
         })

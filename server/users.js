@@ -13,8 +13,8 @@ const addUser = ({ id, name, room }) => {
     id,
     name,
     room,
-    canTurn: !isSecondPlayer,
-    turn: isSecondPlayer? 'O' : '✕'
+    symbol: isSecondPlayer? 'O' : '✕',
+    turn: '✕'
   };
 
   users.push(user);

@@ -1,3 +1,4 @@
+
 const initState = {
     field:
         [
@@ -5,8 +6,9 @@ const initState = {
             ['', '', ''],
             ['', '', '']
         ],
-    currentTurn: '✕',
-    winner: ''
+    currentTurn: '',
+    winner: '',
+    canTurn: null
 }
 
 
@@ -37,7 +39,23 @@ const boardReducer = (state = initState, action) => {
                 return newState
             }
             return state
-
+        }
+        case 'addUser': {
+            const newState = {...state, users: action.payload}
+            return newState
+        }
+        case 'setSymbol' : {
+            const newState = {...state, currentTurn: action.payload}
+            return newState
+        }
+        case 'setField': {
+            const newState = {...state, field: action.payload}
+            return newState
+        }
+        case 'setTurn' : {
+            const newState = {...state, canTurn: action.payload}
+            console.log(newState)
+            return newState
         }
         default: {
             return state

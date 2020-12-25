@@ -1,7 +1,8 @@
 const initState = {
     modalIsOpen: false,
     roomName: '',
-    userName: ''
+    userName: '',
+    socket: null
 }
 const userReducer = (state = initState, action) => {
     switch (action.type) {
@@ -16,6 +17,17 @@ const userReducer = (state = initState, action) => {
         }
         case 'setUserName': {
             const newState = {...state, userName: action.payload}
+            return newState
+        }
+        case 'getUrlParams': {
+            const newState = {...state, userName: action.payload[0], roomName: action.payload[1]}
+            return newState
+        }
+        case 'exitRoom' : {
+            return initState
+        }
+        case 'setSocket' : {
+            const newState = {...state, socket: action.payload}
             return newState
         }
         default: {

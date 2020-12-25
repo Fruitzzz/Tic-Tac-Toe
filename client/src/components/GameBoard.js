@@ -3,19 +3,40 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as actions from '../reducers/actions'
 import Table from 'react-bootstrap/cjs/Table'
-import io from 'socket.io-client'
-
-let socket
 
 
-const GameBoard = ({field, makeTurn, switchTurn, checkWinner, winner, userName, roomName}) => {
-    const ENDPOINT = 'localhost:5000'
+const GameBoard = ({field, makeTurn, checkWinner, winner, socket, setSymbol, canTurn, currentTurn, setField, setTurn}) => {
+    const sendField = () => {
+        socket.emit('sendField', {field})
+    }
     useEffect(() => {
-        socket = io(ENDPOINT)
-        console.log(socket)
-    }, [ENDPOINT])
+        if(socket) {
+            socket.on('takeField', (field) => {
+                try {
+                    console.log(field)
+                    setField(field)
+                   // socket.emit('swapTurns', {})
+                    //socket.on('takeTurns', ({canTurn}) => {
+                     //   setTurn(!canTurn)
+                   // })
+                }
+                catch (e) {
+                    alert(e.message)
+                }
+            })
+
+        }
+    }, [socket, setField])
+    useEffect(() => {
+
+        if(!currentTurn && socket) {
+            socket.emit('requestStartProps')
+            socket.on('takeStartProps', ({turn}) => {
+                setSymbol(turn)
+            })
+        }
+    }, [socket, setSymbol, currentTurn])
     return (
-        <div className="container justify-content-center text-center">
             <Table className="table-bordered">
                 <tbody>
                 {
@@ -26,10 +47,10 @@ const GameBoard = ({field, makeTurn, switchTurn, checkWinner, winner, userName, 
                                     return <td
                                         className={field[row][col] === '✕' ? 'field-cell cross' : field[row][col] === 'O' ? 'field-cell zero' : 'field-cell'}
                                         key={col} onClick={() => {
-                                        if (!field[row][col] && !winner) {
+                                        if (!field[row][col] && !winner && canTurn) {
                                             makeTurn({row, col})
                                             checkWinner()
-                                            switchTurn()
+                                            sendField()
                                         }
                                     }}>{field[row][col]}</td>
                                 })}
@@ -39,7 +60,6 @@ const GameBoard = ({field, makeTurn, switchTurn, checkWinner, winner, userName, 
                 }
                 </tbody>
             </Table>
-        </div>
     )
 }
 const mapStateToProps = (state) => {
@@ -47,12 +67,12 @@ const mapStateToProps = (state) => {
         field: state.boardReducer.field,
         currentTurn: state.boardReducer.currentTurn,
         winner: state.boardReducer.winner,
-        userName: state.userReducer.userName,
-        roomName: state.userReducer.roomName
+        socket: state.userReducer.socket,
+        canTurn: state.boardReducer.canTurn
     }
 }
 const mapDispatchToProps = (dispatch) => {
-    const {makeTurn, switchTurn, checkWinner} = bindActionCreators(actions, dispatch)
-    return {makeTurn, switchTurn, checkWinner}
+    const {makeTurn, switchTurn, checkWinner, setSymbol, setField, setTurn} = bindActionCreators(actions, dispatch)
+    return {makeTurn, switchTurn, checkWinner, setSymbol, setField, setTurn}
 }
 export default connect(mapStateToProps, mapDispatchToProps)(GameBoard)

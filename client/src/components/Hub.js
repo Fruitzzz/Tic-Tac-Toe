@@ -1,96 +1,86 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import Card from 'react-bootstrap/cjs/Card'
-import Button from 'react-bootstrap/cjs/Button'
 import Navbar from 'react-bootstrap/cjs/Navbar'
 import Form from 'react-bootstrap/cjs/Form'
 import FormControl from 'react-bootstrap/cjs/FormControl'
-import Modal from 'react-bootstrap/cjs/Modal'
-import InputGroup from 'react-bootstrap/cjs/InputGroup'
-import {Link} from 'react-router-dom'
+import {SocketContext} from '../App'
+import CreateRoomModal from './CreateRoomModal'
+import JoinRoomModal from './JoinRoomModal'
+
 const Hub = () => {
     const [userName, setUserName] = useState('')
     const [roomName, setRoomName] = useState('')
-    const [modal, setModalStatus] = useState(false)
-    const changeModal = () => {
-        setModalStatus(!modal)
+    const [tags, setTags] = useState('')
+    const [createModal, setCreateModal] = useState(false)
+    const [joinModal, setJoinModal] = useState(false)
+    const [rooms, setRooms] = useState([])
+    const socket = useContext(SocketContext)
+    const [search, setSearch] = useState('')
+    const changeCreateModal = () => {
+        setCreateModal(!createModal)
     }
+    const changeJoinModal = () => {
+        setJoinModal(!joinModal)
+    }
+    useEffect(() => {
+        socket.emit('reqRooms')
+    }, [socket])
+    useEffect(() => {
+        socket.on('takeRooms', (rooms) => {
+            setRooms(rooms)
+        })
+    })
     return (
         <div className="container justify-content-center text-center">
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>TIC-TAC-TOE</Navbar.Brand>
                 <Form inline>
-                    <FormControl type="text" placeholder="Enter tags" className="mr-sm-2"/>
-                    <button type="button" className="btn btn-dark">Search</button>
+                    <FormControl type="text" placeholder="Enter tags..." className="mr-sm-2" onChange={(event) => {
+                        setSearch(event.target.value)
+                    }}/>
                 </Form>
-                <button type="button" className="btn btn-dark" onClick={changeModal}>Create room</button>
+                <button type="button" className="btn btn-dark" onClick={changeCreateModal}>Create room</button>
             </Navbar>
             <div className="card-holder">
-                <Card style={{width: '18rem'}}>
-                    <Card.Body>
-                        <Card.Title>Card Title</Card.Title>
-                        <Card.Text>
-                            Tags: Blood
-                        </Card.Text>
-                        <Button variant="dark">Join</Button>
-                    </Card.Body>
-                </Card>
+                {
+                    rooms.filter(i => i.tags.indexOf(search)!==-1).map((item, index) => {
+                        return (
+                            <Card style={{width: '18rem'}} key={index}>
+                                <Card.Body>
+                                    <Card.Title>{item.roomName}</Card.Title>
+                                    <Card.Text>
+                                        {item.tags}
+                                    </Card.Text>
+                                        <button className="btn btn btn-dark" onClick={() => {
+                                            if(item.count === 2)
+                                                alert('Room is full')
+                                            setRoomName(item.roomName)
+                                            changeJoinModal()
+                                        }}>
+                                            Join
+                                        </button>
+                                </Card.Body>
+                            </Card>
+                        )
+                    })
+                }
             </div>
-            <Modal show={modal} onHide={changeModal}>
-                <Modal.Header>
-                    <Modal.Title>Create room</Modal.Title>
-                    <button type="button" className="close" onClick={changeModal}>
-                        <span aria-hidden={true}>×</span>
-                    </button>
-                </Modal.Header>
-                <Modal.Body>
-                    <InputGroup className="mb-3">
-                        <InputGroup.Prepend>
-                            <InputGroup.Text>Room Name</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            placeholder="Enter a Room name.."
-                            aria-label="Room Name"
-                            id="roomName"
-                            onChange={(event) => {
-                                setRoomName(event.target.value)
-                            }}
-                        />
-                    </InputGroup>
-                    <InputGroup className="mb-3">
-                        <InputGroup.Prepend>
-                            <InputGroup.Text>User Name</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            placeholder="Enter a Room name.."
-                            aria-label="User Name"
-                            id="userName"
-                            onChange={(event) => {
-                                setUserName(event.target.value)
-                            }}
-                        />
-                    </InputGroup>
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text>Tags</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            placeholder="Tags.."
-                            aria-label="Tags"
-                            id="tags"
-                        />
-                    </InputGroup>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button className="btn btn btn-dark" onClick={changeModal}>
-                        Close
-                    </button>
-                    <Link onClick={event => !roomName? event.preventDefault() : null} to={`/game?name=${userName}&room=${roomName}`}>
-                        <button className="btn btn btn-dark">
-                            Create
-                        </button>
-                    </Link>
-                </Modal.Footer>
-            </Modal>
+            <JoinRoomModal/>
+            <CreateRoomModal setRoomName={setRoomName}
+                             setUserName={setUserName}
+                             changeCreateModal={changeCreateModal}
+                             createModal={createModal}
+                             roomName={roomName}
+                             userName={userName}
+                             tags={tags}
+                             setTags={setTags}/>
+            <JoinRoomModal setUserName={setUserName}
+                           userName={userName}
+                           roomName={roomName}
+                           joinModal={joinModal}
+                           tags={tags}
+                           changeJoinModal={changeJoinModal}/>
+
         </div>
     )
 }

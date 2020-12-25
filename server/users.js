@@ -1,11 +1,10 @@
 const users = []
 
-const addUser = ({ id, name, room }) => {
+const addUser = ({ id, name, room, tags }) => {
   name = name.trim().toLowerCase()
   room = room.trim().toLowerCase()
 
   const existingUser = users.find((user) => user.room === room && user.name === name)
-  const isSecondPlayer = users.find((user) => user.room === room)
 
   if(!name || !room) return { error: 'Username and room are required.' }
   if(existingUser) return { error: 'Username is taken.' }
@@ -13,9 +12,15 @@ const addUser = ({ id, name, room }) => {
     id,
     name,
     room,
-    symbol: isSecondPlayer? 'O' : '✕',
-    turn: '✕'
-  };
+    symbol: '✕',
+    turn: '✕',
+    field: [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ],
+    tags
+  }
 
   users.push(user);
   return { user };

@@ -1,38 +1,8 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import Table from 'react-bootstrap/cjs/Table'
 
 
-const GameBoard = ({field, turn, symbol, winner, updateField, updateTurn}) => {
-   /* const sendField = () => {
-        socket.emit('sendField', {field})
-    }
-    useEffect(() => {
-        if(socket) {
-            socket.on('takeField', (field) => {
-                try {
-                    console.log(field)
-                    setField(field)
-                   // socket.emit('swapTurns', {})
-                    //socket.on('takeTurns', ({canTurn}) => {
-                     //   setTurn(!canTurn)
-                   // })
-                }
-                catch (e) {
-                    alert(e.message)
-                }
-            })
-
-        }
-    }, [socket, setField])
-    useEffect(() => {
-
-        if(!currentTurn && socket) {
-            socket.emit('requestStartProps')
-            socket.on('takeStartProps', ({turn}) => {
-                setSymbol(turn)
-            })
-        }
-    }, [socket, setSymbol, currentTurn])*/
+const GameBoard = ({field, turn, symbol, winner, updateField, updateTurn, checkWinner}) => {
     return (
             <Table className="table-bordered">
                 <tbody>
@@ -47,6 +17,7 @@ const GameBoard = ({field, turn, symbol, winner, updateField, updateTurn}) => {
                                             console.log(turn, symbol)
                                         if (!field[row][col] && !winner && turn === symbol) {
                                             updateField({row, col})
+                                            checkWinner()
                                             updateTurn()
                                         }
                                     }}>{field[row][col]}</td>

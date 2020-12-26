@@ -1,14 +1,15 @@
 .table-bordered {
-    width: 730px;
-    height: 730px;
+    height: 50%;
+    max-width: 350px;
+    max-height: 400px;
     table-layout: fixed;
     border: 3px solid black;
     margin: 90px auto;
 }
 .table-bordered .field-cell {
     border: 3px solid black;
-    width: 100px;
-    height: 80px;
+    width: 80px;
+    height: 100px;
     text-align: center;
     font-size: 36px;
     cursor: pointer;

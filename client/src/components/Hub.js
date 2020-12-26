@@ -31,7 +31,7 @@ const Hub = () => {
         })
     })
     return (
-        <div className="container justify-content-center text-center">
+        <div className="container justify-content-center text-center flex-sm-8">
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>TIC-TAC-TOE</Navbar.Brand>
                 <Form inline>
@@ -41,11 +41,11 @@ const Hub = () => {
                 </Form>
                 <button type="button" className="btn btn-dark" onClick={changeCreateModal}>Create room</button>
             </Navbar>
-            <div className="card-holder">
+            <div className="card-holder card-columns ">
                 {
                     rooms.filter(i => i.tags.indexOf(search)!==-1).map((item, index) => {
                         return (
-                            <Card style={{width: '18rem'}} key={index}>
+                            <Card style={{height:'154px', margin: '10px auto'}} key={index}>
                                 <Card.Body>
                                     <Card.Title>{item.roomName}</Card.Title>
                                     <Card.Text>
@@ -54,8 +54,10 @@ const Hub = () => {
                                         <button className="btn btn btn-dark" onClick={() => {
                                             if(item.count === 2)
                                                 alert('Room is full')
-                                            setRoomName(item.roomName)
-                                            changeJoinModal()
+                                            else {
+                                                setRoomName(item.roomName)
+                                                changeJoinModal()
+                                            }
                                         }}>
                                             Join
                                         </button>
@@ -73,7 +75,8 @@ const Hub = () => {
                              roomName={roomName}
                              userName={userName}
                              tags={tags}
-                             setTags={setTags}/>
+                             setTags={setTags}
+                             rooms={rooms}/>
             <JoinRoomModal setUserName={setUserName}
                            userName={userName}
                            roomName={roomName}

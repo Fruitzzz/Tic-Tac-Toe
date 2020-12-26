@@ -73,13 +73,12 @@ const PlayRoom = () => {
         })
     })
     return (
-        <div className="container justify-content-center text-center">
+        <div className="container justify-content-center text-center flex-sm-8">
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>{roomName}</Navbar.Brand>
-                <Link onClick={() => {
-                    //socket.emit('disconnect')
-                }} to={'/'}>
-                    <button type="button" className="btn btn-dark">Leave</button>
+                <Link to={'/'}>
+                    <button type="button" className="btn btn-dark" onClick={() => {
+                        socket.emit('removeUser')}}>Leave</button>
                 </Link>
             </Navbar>
             <GameBoard field={field} symbol={symbol} turn={turn} winner={winner} updateField={updateField} updateTurn={updateTurn} checkWinner={checkWinner}/>

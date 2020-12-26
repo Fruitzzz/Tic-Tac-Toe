@@ -1,9 +1,14 @@
-import React from 'react'
+import React, {useState} from 'react'
 import FormControl from 'react-bootstrap/cjs/FormControl'
 import Modal from 'react-bootstrap/cjs/Modal'
 import InputGroup from 'react-bootstrap/cjs/InputGroup'
 import {Link} from 'react-router-dom'
-const CreateRoomModal = ({setRoomName, setUserName, changeCreateModal, roomName, userName, createModal, setTags, tags}) => {
+const CreateRoomModal = ({setRoomName, setUserName, changeCreateModal, roomName, userName, createModal, setTags, tags, rooms}) => {
+    const [isCorrect, setCorrect] = useState(true)
+    const checkRoomName = (event) => {
+        const checker = rooms.find((item) => (item.roomName === event.target.value))
+        checker? setCorrect(false): setCorrect(true)
+        }
     return (
         <Modal show={createModal} onHide={changeCreateModal}>
             <Modal.Header>
@@ -23,6 +28,7 @@ const CreateRoomModal = ({setRoomName, setUserName, changeCreateModal, roomName,
                         id="roomName"
                         onChange={(event) => {
                             setRoomName(event.target.value)
+                            checkRoomName(event)
                         }}
                     />
                 </InputGroup>
@@ -58,7 +64,7 @@ const CreateRoomModal = ({setRoomName, setUserName, changeCreateModal, roomName,
                     Close
                 </button>
                 <Link onClick={event => !roomName? event.preventDefault() : null} to={`/game?name=${userName}&room=${roomName}&type=create&tags=${tags.trim()}`}>
-                    <button className="btn btn btn-dark">
+                    <button className="btn btn btn-dark" disabled={!(isCorrect && userName)}>
                         Create
                     </button>
                 </Link>

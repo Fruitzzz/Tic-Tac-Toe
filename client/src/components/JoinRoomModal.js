@@ -32,9 +32,9 @@ const JoinRoomModal = ({changeJoinModal, setUserName, roomName, userName, joinMo
                 <button className="btn btn btn-dark" onClick={changeJoinModal}>
                     Close
                 </button>
-                <Link onClick={event => !roomName? event.preventDefault() : null} to={`/game?name=${userName}&room=${roomName}&type=join&tags=${tags}`}>
+                <Link onClick={event => !userName? event.preventDefault() : null} to={`/game?name=${userName}&room=${roomName}&type=join&tags=${tags}`}>
                     <button className="btn btn btn-dark">
-                        Create
+                        Join
                     </button>
                 </Link>
             </Modal.Footer>

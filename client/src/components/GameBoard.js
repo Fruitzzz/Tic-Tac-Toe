@@ -14,7 +14,6 @@ const GameBoard = ({field, turn, symbol, winner, updateField, updateTurn, checkW
                                     return <td
                                         className={field[row][col] === '✕' ? 'field-cell cross' : field[row][col] === 'O' ? 'field-cell zero' : 'field-cell'}
                                         key={col} onClick={() => {
-                                            console.log(turn, symbol)
                                         if (!field[row][col] && !winner && turn === symbol) {
                                             updateField({row, col})
                                             checkWinner()

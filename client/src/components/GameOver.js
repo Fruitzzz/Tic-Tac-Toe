@@ -3,24 +3,24 @@ import Modal from 'react-bootstrap/cjs/Modal'
 import {Link} from "react-router-dom";
 
 const GameOver = ({winner, socket}) => {
-    const handleClose = () => {
-        socket.emit('disconnect')
-        socket.close()
+    const handleShow = () => {
+        socket.emit('removeUser')
     }
     const [wasOpened] = useState(true)
     return (
         <Modal
             backdrop="static"
-            show={wasOpened && !!winner}>
+            show={wasOpened && !!winner}
+            onShow={handleShow}>
             <Modal.Header >
                 <Modal.Title>Game is Over</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {`${winner} won!`}
+                { winner !== 'Draw'? `${winner} won!` : 'Draw'}
             </Modal.Body>
             <Modal.Footer>
                 <Link to={`/`}>
-                <button className="btn btn-dark" onClick={handleClose}>
+                <button className="btn btn-dark">
                     Close
                 </button>
                 </Link>

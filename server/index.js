@@ -25,7 +25,7 @@ io.on('connect', (socket) => {
         const firstUser = users.find((item) => item.room === roomName)
         const {error, user} = addUser({id: socket.id, name, room: roomName, tags})
         if (firstUser && user) {
-            user.symbol = 'O'
+            user.symbol = firstUser.symbol === 'O'? '✕' : 'O'
             user.turn = firstUser.turn
             user.field = firstUser.field
         }
@@ -34,7 +34,7 @@ io.on('connect', (socket) => {
             socket.join(user.room)
             io.to(user.id).emit('created', {turn: user.turn, symbol: user.symbol, field: user.field})
             io.to(user.id).emit('joined', {turn: user.turn, symbol: user.symbol, field: user.field})
-            io.sockets.emit('takeRooms', rooms)
+            socket.broadcast.emit('takeRooms', rooms)
         }
     })
 
@@ -74,11 +74,20 @@ io.on('connect', (socket) => {
             || (tempField[2] === tempField[5] && tempField[2] === tempField[8] && tempField[2] !== '') || (tempField[1] === tempField[4] && tempField[1] === tempField[7] && tempField[1] !== '')
             || (tempField[0] === tempField[4] && tempField[0] === tempField[8] && tempField[0] !== '') || (tempField[2] === tempField[4] && tempField[2] === tempField[6] && tempField[2] !== ''))
             io.to(user.room).emit('takeWinner', {win: user.turn})
+        if((tempField[0]) && tempField[1] && tempField[2] && tempField[3] && tempField[4] && tempField[5] && tempField[6] && tempField[7] && tempField[8])
+            io.to(user.room).emit('takeWinner', {win: 'Draw'})
     })
-
     socket.on('disconnect', () => {
+         removeUser(socket.id)
+        const rooms = createRooms()
+        if(rooms)
+            io.sockets.emit('takeRooms', rooms)
+    })
+    socket.on('removeUser', () => {
         removeUser(socket.id)
-        socket.disconnect()
+        const rooms = createRooms()
+        if(rooms)
+            io.sockets.emit('takeRooms', rooms)
     })
 })
 const createRooms = () => {
